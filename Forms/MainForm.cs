@@ -15,6 +15,7 @@ using MatrixForm.Tools;
 using System.Net.NetworkInformation;
 using System.Threading;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Configuration;
 
 namespace MatrixForm
 {
@@ -38,8 +39,15 @@ namespace MatrixForm
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            IPBox.Text = "192.168.0.4";
-            PortBox.Text = "8080";
+            //IPBox.Text = "192.168.0.4";
+            //PortBox.Text = "8080";
+            // 从App.config中读取IP地址和端口号  
+            string ipAddress = ConfigurationManager.AppSettings["IPAddress"];
+            string port = ConfigurationManager.AppSettings["Port"];
+            // 分配值给TextBox控件  
+            IPBox.Text = ipAddress;
+            PortBox.Text = port;
+
             TcpTypeBox.SelectedIndex=0;
             EncodingComboBox.SelectedIndex = 0;
         }
@@ -210,7 +218,7 @@ namespace MatrixForm
                 // 可能也会抛出SocketException,根据SocketErrorCode来处理 
                 //UpdateUIThreadSafe("Socket操作被中止，连接可能已关闭");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // 处理其他类型的异常
                 //UpdateUIThreadSafe("发生异常: " + e.Message);
