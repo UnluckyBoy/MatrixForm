@@ -217,7 +217,7 @@ namespace MatrixForm
             }
             catch (SocketException e) when (e.SocketErrorCode == SocketError.OperationAborted)
             {
-                // 可能也会抛出SocketException,根据SocketErrorCode来处理 
+                // 可能会抛出SocketException
                 //UpdateUIThreadSafe("Socket操作被中止，连接可能已关闭");
             }
             catch (Exception)
@@ -225,9 +225,9 @@ namespace MatrixForm
                 // 处理其他类型的异常
                 //UpdateUIThreadSafe("发生异常: " + e.Message);
             }
-            UpdateUIThreadSafe("客户端连接已关闭!");
             // 关闭连接  
             client.Close();
+            UpdateUIThreadSafe("客户端连接已关闭!");
         }
 
         /// <summary>
