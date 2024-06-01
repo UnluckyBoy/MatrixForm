@@ -70,10 +70,10 @@ namespace MatrixForm
             //string projectRootPath = Directory.GetParent(basePath).FullName;
             //Debug.Print("路径2:" + projectRootPath);
             // 构建要读取的文件的完整路径  
-            string filePath = Path.Combine(basePath, "config", "file", "img.txt");
+            string filePath = Path.Combine(basePath, "config", "file", "img2.txt");
             try
             {
-                // 检查文件是否存在  
+                // 检查文件是否存在
                 if (File.Exists(filePath))
                 {
                     // 读取文件内容  
@@ -102,6 +102,8 @@ namespace MatrixForm
                 MessageBox.Show("读取文件时出错: " + ex.Message, "错误");
             }
         }
+
+        #region 通信响应逻辑
 
         private void TcpBtn_Click(object sender, EventArgs e)
         {
@@ -278,26 +280,7 @@ namespace MatrixForm
                 clients.Clear(); // 清除客户端列表
                 listenThread.Join(); // 等待监听线程结束
             }
-            //if (listener != null)
-            //{
-            //    listener.Stop();
-            //    UpdateUIThreadSafe("停止监听！");
-            //    // 关闭所有已接受的客户端连接  
-            //    foreach (var client in clients)
-            //    {
-            //        try
-            //        {
-            //            client.Close();
-            //        }
-            //        catch (Exception e)
-            //        {
-            //            // 处理关闭客户端时可能出现的异常  
-            //            UpdateUIThreadSafe("关闭客户端时出错: " + e.Message);
-            //        }
-            //    }
-            //    clients.Clear(); // 清除客户端列表
-            //    listenThread.Join(); // 等待监听线程结束
-            //}
         }
     }
+    #endregion
 }
