@@ -279,19 +279,15 @@ namespace MatrixForm
                         /**ASCLL,Unicode,UTF8,HEX*/
                         case "ASCII":
                             // 将接收到的数据转换为字符串
-                            Console.WriteLine("ASCII");
                             receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                             break;
                         case "Unicode":
-                            Console.WriteLine("Unicode");
                             receivedData = Encoding.Unicode.GetString(buffer, 0, bytesRead);
                             break;
                         case "UTF8":
-                            Console.WriteLine("UTF8");
                             receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                             break;
                         default:
-                            Console.WriteLine("UTF8");
                             receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                             break;
                     }
