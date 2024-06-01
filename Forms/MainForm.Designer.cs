@@ -186,7 +186,7 @@ namespace MatrixForm
             this.EncodingComboBox.FormattingEnabled = true;
             this.EncodingComboBox.Items.AddRange(new object[] {
             "UTF8",
-            "ASCLL",
+            "ASCII",
             "Unicode"});
             this.EncodingComboBox.Location = new System.Drawing.Point(627, 7);
             this.EncodingComboBox.Name = "EncodingComboBox";

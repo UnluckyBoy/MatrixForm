@@ -79,7 +79,7 @@ namespace MatrixForm
             }
 
             TcpTypeBox.SelectedIndex=0;//通信方式默认:Tcp
-            EncodingComboBox.SelectedIndex = 1;//编码方式默认:0-UTF8,1-ASCLL,2-Unicode
+            EncodingComboBox.SelectedIndex = 0;//编码方式默认:0-UTF8,1-ASCLL,2-Unicode
 
             // 添加KeyDown事件处理程序  
             tcpTextBox.KeyDown += TcpTextBox_KeyDown;
@@ -273,20 +273,25 @@ namespace MatrixForm
                 while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
                 {
                     string receivedData;
+                    //Console.WriteLine("编码："+ encodingType);
                     switch (encodingType)
                     {
                         /**ASCLL,Unicode,UTF8,HEX*/
                         case "ASCII":
                             // 将接收到的数据转换为字符串
+                            Console.WriteLine("ASCII");
                             receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                             break;
                         case "Unicode":
+                            Console.WriteLine("Unicode");
                             receivedData = Encoding.Unicode.GetString(buffer, 0, bytesRead);
                             break;
                         case "UTF8":
+                            Console.WriteLine("UTF8");
                             receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                             break;
                         default:
+                            Console.WriteLine("UTF8");
                             receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                             break;
                     }
