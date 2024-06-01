@@ -16,6 +16,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Configuration;
+using System.Net.Http;
 
 namespace MatrixForm
 {
@@ -25,12 +26,14 @@ namespace MatrixForm
         private String ipAddress;
         private String port;
         private String encodingType;
+        //private String tcpInterval;
 
         private TcpListener listener;
         private Thread listenThread;
         private TcpClient client;
         private bool keepTcp= true;
         private List<TcpClient> clients = new List<TcpClient>();
+        private System.Timers.Timer sendTime;
 
         public MainForm()
         {
@@ -41,18 +44,62 @@ namespace MatrixForm
         {
             //IPBox.Text = "192.168.0.4";
             //PortBox.Text = "8080";
-            // 从App.config中读取IP地址和端口号  
-            string ipAddress = ConfigurationManager.AppSettings["IPAddress"];
-            string port = ConfigurationManager.AppSettings["Port"];
-            // 分配值给TextBox控件  
-            IPBox.Text = ipAddress;
-            PortBox.Text = port;
 
-            TcpTypeBox.SelectedIndex=0;
-            EncodingComboBox.SelectedIndex = 0;
+            //// 从App.config中读取IP地址和端口号  
+            //string ipAddress = ConfigurationManager.AppSettings["IPAddress"];
+            //string port = ConfigurationManager.AppSettings["Port"];
+            //string tcpInterval = ConfigurationManager.AppSettings["TcpInterval"];
+            //// 分配值给TextBox控件
+            //IPBox.Text = ipAddress;
+            //PortBox.Text = port;
+            //IntervalBox.Text = tcpInterval;
+
+            try
+            {
+                // 从App.config中读取IP地址、端口号和间隔  
+                string ipAddress = ConfigurationManager.AppSettings["IPAddress"];
+                string portString = ConfigurationManager.AppSettings["Port"];
+                string tcpInterval = ConfigurationManager.AppSettings["TcpInterval"];
+
+                // 验证端口号是有效的整数  
+                if (!int.TryParse(portString, out int portNumber) || portNumber < 1 || portNumber > 65535)
+                {
+                    throw new ArgumentException("Invalid port number in configuration file.");
+                }
+
+                // 分配值给TextBox控件  
+                IPBox.Text = ipAddress;
+                PortBox.Text = portString; 
+                IntervalBox.Text = tcpInterval;
+            }
+            catch (Exception ex)
+            {
+                // 处理异常
+                MessageBox.Show("读取配置文件异常: " + ex.Message);
+            }
+
+            TcpTypeBox.SelectedIndex=0;//通信方式默认:Tcp
+            EncodingComboBox.SelectedIndex = 1;//编码方式默认:0-UTF8,1-ASCLL,2-Unicode
+
+            // 添加KeyDown事件处理程序  
+            tcpTextBox.KeyDown += TcpTextBox_KeyDown;
         }
 
-     
+        /// <summary>
+        /// 当键盘按钮BackSpace时,清空tcpTextBox内容
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void TcpTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                tcpTextBox.ReadOnly = false;
+                tcpTextBox.Text = string.Empty;
+                tcpTextBox.ReadOnly = true;
+            }
+        }
 
 
         /// <summary>
@@ -151,15 +198,15 @@ namespace MatrixForm
                 try
                 {
                     client = listener.AcceptTcpClient();
-
-                    clients.Add(client);
-
                     // 创建线程处理客户端通信  
                     Thread clientThread = new Thread(() => HandleClientComm(client));
                     clientThread.IsBackground = true;
                     clientThread.Start();
                     UpdateUIThreadSafe("客户端连接成功：" + client.Client.RemoteEndPoint);
                     clients.Add(client);
+
+                    // 一旦连接建立，启动发送数据的定时器  
+                    StartSendDataTimer(client);
                 }
                 catch (SocketException)
                 {
@@ -178,7 +225,43 @@ namespace MatrixForm
         }
 
         /// <summary>
-        /// 
+        /// 发送数据逻辑
+        /// </summary>
+        /// <param name="client"></param>
+        private void StartSendDataTimer(TcpClient client)
+        {
+            // SendDataToClient是发送数据到客户端的方法  
+            sendTime = new System.Timers.Timer(int.Parse(IntervalBox.Text.Trim())*1000); // IntervalBox.Text内容秒间隔  
+            sendTime.Elapsed += (sender, e) => SendDataToClient(client);
+            sendTime.AutoReset = true; // 设置为true重复触发Elapsed事件  
+            sendTime.Enabled = true; // 启动定时器
+        }
+
+        private void SendDataToClient(TcpClient client)
+        {
+            if (client != null && client.Connected)
+            {
+                try
+                {
+                    NetworkStream stream = client.GetStream();
+                    byte[] data = Encoding.UTF8.GetBytes("服务端：" + ipAddress + ":" + port + "向你发送数据..."); // 要发送的数据  
+                    stream.Write(data, 0, data.Length);
+                    UpdateUIThreadSafe("服务端：" + ipAddress + ":" + port + "发送数据成功!");
+                }
+                catch (Exception ep)
+                {
+                    // 处理异常
+                    UpdateUIThreadSafe("数据发送异常：" + ep.Message);
+                    // 可能需要重新连接或关闭TcpClient等
+                    client.Close();
+                    clients.Remove(client);
+                    StopSendDataTimer();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 接收数据逻辑
         /// </summary>
         /// <param name="client"></param>
         private void HandleClientComm(TcpClient client)
@@ -228,6 +311,8 @@ namespace MatrixForm
             // 关闭连接  
             client.Close();
             UpdateUIThreadSafe("客户端连接已关闭!");
+
+            StopSendDataTimer();
         }
 
         /// <summary>
@@ -253,6 +338,9 @@ namespace MatrixForm
             CloseAllClients();
         }
 
+        /// <summary>
+        /// 停止服务时关闭所有通信
+        /// </summary>
         private void CloseAllClients()
         {
             //Console.WriteLine("Close-listener.Server:" + listener.Server.IsBound);
@@ -279,6 +367,19 @@ namespace MatrixForm
                 }
                 clients.Clear(); // 清除客户端列表
                 listenThread.Join(); // 等待监听线程结束
+            }
+        }
+
+        /// <summary>
+        /// 服务停止时,将定时器时停止并释放
+        /// </summary>        
+        private void StopSendDataTimer()
+        {
+            if (sendTime != null)
+            {
+                sendTime.Stop();
+                sendTime.Dispose();
+                sendTime = null;
             }
         }
     }

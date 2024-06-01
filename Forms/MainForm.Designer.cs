@@ -42,6 +42,8 @@ namespace MatrixForm
             this.ShowPanel = new System.Windows.Forms.Panel();
             this.tcpTextBox = new System.Windows.Forms.TextBox();
             this.TopBtnPanel = new System.Windows.Forms.Panel();
+            this.IntervalBox = new System.Windows.Forms.TextBox();
+            this.IntervalLabel = new System.Windows.Forms.Label();
             this.StopTcpBtn = new System.Windows.Forms.Button();
             this.EncodingComboBox = new System.Windows.Forms.ComboBox();
             this.EncodingLabel = new System.Windows.Forms.Label();
@@ -133,6 +135,8 @@ namespace MatrixForm
             this.TopBtnPanel.AutoSize = true;
             this.TopBtnPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.TopBtnPanel.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.TopBtnPanel.Controls.Add(this.IntervalBox);
+            this.TopBtnPanel.Controls.Add(this.IntervalLabel);
             this.TopBtnPanel.Controls.Add(this.StopTcpBtn);
             this.TopBtnPanel.Controls.Add(this.EncodingComboBox);
             this.TopBtnPanel.Controls.Add(this.EncodingLabel);
@@ -150,10 +154,26 @@ namespace MatrixForm
             this.TopBtnPanel.Size = new System.Drawing.Size(1565, 46);
             this.TopBtnPanel.TabIndex = 0;
             // 
+            // IntervalBox
+            // 
+            this.IntervalBox.Location = new System.Drawing.Point(855, 8);
+            this.IntervalBox.Name = "IntervalBox";
+            this.IntervalBox.Size = new System.Drawing.Size(36, 28);
+            this.IntervalBox.TabIndex = 10;
+            // 
+            // IntervalLabel
+            // 
+            this.IntervalLabel.AutoSize = true;
+            this.IntervalLabel.Location = new System.Drawing.Point(750, 13);
+            this.IntervalLabel.Name = "IntervalLabel";
+            this.IntervalLabel.Size = new System.Drawing.Size(98, 18);
+            this.IntervalLabel.TabIndex = 9;
+            this.IntervalLabel.Text = "通信间隔/S";
+            // 
             // StopTcpBtn
             // 
             this.StopTcpBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.StopTcpBtn.Location = new System.Drawing.Point(901, 5);
+            this.StopTcpBtn.Location = new System.Drawing.Point(1206, 5);
             this.StopTcpBtn.Name = "StopTcpBtn";
             this.StopTcpBtn.Size = new System.Drawing.Size(96, 36);
             this.StopTcpBtn.TabIndex = 8;
@@ -238,7 +258,7 @@ namespace MatrixForm
             // 
             this.TcpBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.TcpBtn.BackColor = System.Drawing.SystemColors.Info;
-            this.TcpBtn.Location = new System.Drawing.Point(814, 5);
+            this.TcpBtn.Location = new System.Drawing.Point(1113, 5);
             this.TcpBtn.Name = "TcpBtn";
             this.TcpBtn.Size = new System.Drawing.Size(66, 36);
             this.TcpBtn.TabIndex = 0;
@@ -275,23 +295,25 @@ namespace MatrixForm
         }
 
         #endregion
-        private Panel imgPanel;
+        private Panel imgPanel;//
         private PictureBox imgBox;
         private Button imgBtn;
-        private Panel LeftPanel;
-        private Panel TopBtnPanel;
-        private Button TcpBtn;
-        private Panel ShowPanel;
-        private TextBox IPBox;
-        private Label IPLabel;
-        private TextBox PortBox;
-        private Label PortLabel;
-        private TextBox tcpTextBox;
-        private Label TcpType;
-        private ComboBox TcpTypeBox;
-        private Label EncodingLabel;
-        private ComboBox EncodingComboBox;
-        private Button StopTcpBtn;
+        private Panel LeftPanel;//左边画布
+        private Panel TopBtnPanel;//左边顶部按钮画布
+        private Button TcpBtn;//通信按钮
+        private Panel ShowPanel;//显示画布
+        private TextBox IPBox;//IP输入框
+        private Label IPLabel;//IP文本
+        private TextBox PortBox;//端口输入框
+        private Label PortLabel;//端口文本
+        private TextBox tcpTextBox;//通信消息内容框
+        private Label TcpType;//通信类型文本
+        private ComboBox TcpTypeBox;//通信类型选择框
+        private Label EncodingLabel;//通信编码文本
+        private ComboBox EncodingComboBox;//通信编码选择框
+        private Button StopTcpBtn;//停止通信按钮
+        private Label IntervalLabel;//通信间隔文本
+        private TextBox IntervalBox;//通信间隔输入
     }
 }
 
