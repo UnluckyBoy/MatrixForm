@@ -42,16 +42,16 @@ namespace MatrixForm
             this.ShowPanel = new System.Windows.Forms.Panel();
             this.tcpTextBox = new System.Windows.Forms.TextBox();
             this.TopBtnPanel = new System.Windows.Forms.Panel();
+            this.StopTcpBtn = new System.Windows.Forms.Button();
+            this.EncodingComboBox = new System.Windows.Forms.ComboBox();
+            this.EncodingLabel = new System.Windows.Forms.Label();
+            this.TcpTypeBox = new System.Windows.Forms.ComboBox();
+            this.TcpType = new System.Windows.Forms.Label();
             this.PortBox = new System.Windows.Forms.TextBox();
             this.PortLabel = new System.Windows.Forms.Label();
             this.IPLabel = new System.Windows.Forms.Label();
             this.IPBox = new System.Windows.Forms.TextBox();
             this.TcpBtn = new System.Windows.Forms.Button();
-            this.TcpType = new System.Windows.Forms.Label();
-            this.TcpTypeBox = new System.Windows.Forms.ComboBox();
-            this.EncodingLabel = new System.Windows.Forms.Label();
-            this.EncodingComboBox = new System.Windows.Forms.ComboBox();
-            this.StopTcpBtn = new System.Windows.Forms.Button();
             this.imgPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             this.LeftPanel.SuspendLayout();
@@ -123,6 +123,7 @@ namespace MatrixForm
             this.tcpTextBox.Multiline = true;
             this.tcpTextBox.Name = "tcpTextBox";
             this.tcpTextBox.ReadOnly = true;
+            this.tcpTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tcpTextBox.Size = new System.Drawing.Size(1565, 1034);
             this.tcpTextBox.TabIndex = 0;
             // 
@@ -148,6 +149,58 @@ namespace MatrixForm
             this.TopBtnPanel.Padding = new System.Windows.Forms.Padding(2);
             this.TopBtnPanel.Size = new System.Drawing.Size(1565, 46);
             this.TopBtnPanel.TabIndex = 0;
+            // 
+            // StopTcpBtn
+            // 
+            this.StopTcpBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.StopTcpBtn.Location = new System.Drawing.Point(901, 5);
+            this.StopTcpBtn.Name = "StopTcpBtn";
+            this.StopTcpBtn.Size = new System.Drawing.Size(96, 36);
+            this.StopTcpBtn.TabIndex = 8;
+            this.StopTcpBtn.Text = "停止监听";
+            this.StopTcpBtn.UseVisualStyleBackColor = true;
+            this.StopTcpBtn.Click += new System.EventHandler(this.StopTcpBtn_Click);
+            // 
+            // EncodingComboBox
+            // 
+            this.EncodingComboBox.FormattingEnabled = true;
+            this.EncodingComboBox.Items.AddRange(new object[] {
+            "UTF8",
+            "ASCLL",
+            "Unicode"});
+            this.EncodingComboBox.Location = new System.Drawing.Point(627, 7);
+            this.EncodingComboBox.Name = "EncodingComboBox";
+            this.EncodingComboBox.Size = new System.Drawing.Size(96, 26);
+            this.EncodingComboBox.TabIndex = 7;
+            // 
+            // EncodingLabel
+            // 
+            this.EncodingLabel.AutoSize = true;
+            this.EncodingLabel.Location = new System.Drawing.Point(540, 14);
+            this.EncodingLabel.Name = "EncodingLabel";
+            this.EncodingLabel.Size = new System.Drawing.Size(80, 18);
+            this.EncodingLabel.TabIndex = 6;
+            this.EncodingLabel.Text = "编码方式";
+            // 
+            // TcpTypeBox
+            // 
+            this.TcpTypeBox.FormattingEnabled = true;
+            this.TcpTypeBox.Items.AddRange(new object[] {
+            "TCP",
+            "UDP"});
+            this.TcpTypeBox.Location = new System.Drawing.Point(456, 8);
+            this.TcpTypeBox.Name = "TcpTypeBox";
+            this.TcpTypeBox.Size = new System.Drawing.Size(68, 26);
+            this.TcpTypeBox.TabIndex = 5;
+            // 
+            // TcpType
+            // 
+            this.TcpType.AutoSize = true;
+            this.TcpType.Location = new System.Drawing.Point(369, 13);
+            this.TcpType.Name = "TcpType";
+            this.TcpType.Size = new System.Drawing.Size(80, 18);
+            this.TcpType.TabIndex = 4;
+            this.TcpType.Text = "通信方式";
             // 
             // PortBox
             // 
@@ -192,58 +245,6 @@ namespace MatrixForm
             this.TcpBtn.Text = "通信";
             this.TcpBtn.UseVisualStyleBackColor = false;
             this.TcpBtn.Click += new System.EventHandler(this.TcpBtn_Click);
-            // 
-            // TcpType
-            // 
-            this.TcpType.AutoSize = true;
-            this.TcpType.Location = new System.Drawing.Point(369, 13);
-            this.TcpType.Name = "TcpType";
-            this.TcpType.Size = new System.Drawing.Size(80, 18);
-            this.TcpType.TabIndex = 4;
-            this.TcpType.Text = "通信方式";
-            // 
-            // TcpTypeBox
-            // 
-            this.TcpTypeBox.FormattingEnabled = true;
-            this.TcpTypeBox.Items.AddRange(new object[] {
-            "TCP",
-            "UDP"});
-            this.TcpTypeBox.Location = new System.Drawing.Point(456, 8);
-            this.TcpTypeBox.Name = "TcpTypeBox";
-            this.TcpTypeBox.Size = new System.Drawing.Size(68, 26);
-            this.TcpTypeBox.TabIndex = 5;
-            // 
-            // EncodingLabel
-            // 
-            this.EncodingLabel.AutoSize = true;
-            this.EncodingLabel.Location = new System.Drawing.Point(540, 14);
-            this.EncodingLabel.Name = "EncodingLabel";
-            this.EncodingLabel.Size = new System.Drawing.Size(80, 18);
-            this.EncodingLabel.TabIndex = 6;
-            this.EncodingLabel.Text = "编码方式";
-            // 
-            // EncodingComboBox
-            // 
-            this.EncodingComboBox.FormattingEnabled = true;
-            this.EncodingComboBox.Items.AddRange(new object[] {
-            "UTF8",
-            "ASCLL",
-            "Unicode"});
-            this.EncodingComboBox.Location = new System.Drawing.Point(627, 7);
-            this.EncodingComboBox.Name = "EncodingComboBox";
-            this.EncodingComboBox.Size = new System.Drawing.Size(96, 26);
-            this.EncodingComboBox.TabIndex = 7;
-            // 
-            // StopTcpBtn
-            // 
-            this.StopTcpBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.StopTcpBtn.Location = new System.Drawing.Point(901, 5);
-            this.StopTcpBtn.Name = "StopTcpBtn";
-            this.StopTcpBtn.Size = new System.Drawing.Size(96, 36);
-            this.StopTcpBtn.TabIndex = 8;
-            this.StopTcpBtn.Text = "停止监听";
-            this.StopTcpBtn.UseVisualStyleBackColor = true;
-            this.StopTcpBtn.Click += new System.EventHandler(this.StopTcpBtn_Click);
             // 
             // MainForm
             // 
