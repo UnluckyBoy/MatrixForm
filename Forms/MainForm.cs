@@ -27,6 +27,7 @@ namespace MatrixForm
         private String port;
         private String encodingType;
         //private String tcpInterval;
+        private String targetPath;
 
         private TcpListener listener;
         private Thread listenThread;
@@ -109,45 +110,71 @@ namespace MatrixForm
         /// <param name="e"></param>
         private void imgBtn_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("点击了按钮！");
+            List<string> fileNames = new List<string>();
+            // 获取当前.exe文件的路径（不包含文件名）  
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            Console.WriteLine("文件路径:" + basePath);
+            // 构建config文件夹的路径  
+            targetPath = Path.Combine(basePath, "config", "file");
+            Console.WriteLine("文件路径:" + targetPath);
+            // 确保config文件夹存在  
+            if (Directory.Exists(targetPath))
+            {
+                // 遍历config文件夹中的文件  
+                string[] files = Directory.GetFiles(targetPath);
+                // 列出文件名并添加到列表中  
+                foreach (var file in files)
+                {
+                    FileInfo fileInfo = new FileInfo(file);
+                    fileNames.Add(fileInfo.Name); // 只添加文件名，不添加路径  
+                }
+
+                foreach (var fileName in fileNames)
+                {
+                    //Console.WriteLine(fileName);
+                    imgComboBox.Items.Add(Path.GetFileNameWithoutExtension(fileName));
+                }
+            }
+            else
+            {
+                // 处理config文件夹不存在的情况  
+                MessageBox.Show("读取文件夹时出错");
+            }
+
             // 获取当前应用程序的执行目录  
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;/*执行文件目录*/
-            Debug.Print("路径:" + basePath);
-            // 向上导航一级目录到达项目根目录（与Form和Resources同级的目录）  
-            //string projectRootPath = Directory.GetParent(basePath).FullName;
-            //Debug.Print("路径2:" + projectRootPath);
-            // 构建要读取的文件的完整路径  
-            string filePath = Path.Combine(basePath, "config", "file", "img2.txt");
-            try
-            {
-                // 检查文件是否存在
-                if (File.Exists(filePath))
-                {
-                    // 读取文件内容  
-                    string fileContent = File.ReadAllText(filePath);
-                    Debug.Print("文件内容:" + fileContent);
-                    //MessageBox.Show(fileContent, "文件内容");
-                    byte[] byteArray = Convert.FromBase64String(fileContent);
-                    // 使用 MemoryStream将字节数组转换为Image  
-                    using (MemoryStream ms = new MemoryStream(byteArray))
-                    {
-                        // 从 MemoryStream 加载 Image  
-                        Image image = Image.FromStream(ms);
-                        // 将 Image 赋值给 PictureBox 的 Image 属性  
-                        imgBox.Image = image;
-                    }
-                }
-                else
-                {
-                    // 文件不存在时的处理  
-                    MessageBox.Show("文件不存在！", "错误");
-                }
-            }
-            catch (Exception ex)
-            {
-                // 处理可能出现的异常  
-                MessageBox.Show("读取文件时出错: " + ex.Message, "错误");
-            }
+            //string basePath = AppDomain.CurrentDomain.BaseDirectory;/*执行文件目录*/
+            //Debug.Print("路径:" + basePath);
+            //string filePath = Path.Combine(basePath, "config", "file", "img2.txt");
+            //try
+            //{
+            //    // 检查文件是否存在
+            //    if (File.Exists(filePath))
+            //    {
+            //        // 读取文件内容  
+            //        string fileContent = File.ReadAllText(filePath);
+            //        Debug.Print("文件内容:" + fileContent);
+            //        //MessageBox.Show(fileContent, "文件内容");
+            //        byte[] byteArray = Convert.FromBase64String(fileContent);
+            //        // 使用 MemoryStream将字节数组转换为Image  
+            //        using (MemoryStream ms = new MemoryStream(byteArray))
+            //        {
+            //            // 从 MemoryStream 加载 Image  
+            //            Image image = Image.FromStream(ms);
+            //            // 将 Image 赋值给 PictureBox 的 Image 属性  
+            //            imgBox.Image = image;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // 文件不存在时的处理  
+            //        MessageBox.Show("文件不存在！", "错误");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // 处理可能出现的异常  
+            //    MessageBox.Show("读取文件时出错: " + ex.Message, "错误");
+            //}
         }
 
         #region 通信响应逻辑
@@ -383,6 +410,35 @@ namespace MatrixForm
                 sendTime = null;
             }
         }
+        #endregion
+
+        /// <summary>
+        /// 图片选择下拉框响应
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowImgHandle(object sender, EventArgs e)
+        {
+            if (imgComboBox.SelectedIndex != -1)
+            {
+                Console.WriteLine("值发生改变:"+ imgComboBox.SelectedItem.ToString());
+                Console.WriteLine("路径:" + targetPath);
+                // 获取当前选中的项的值
+                string selectedValue = imgComboBox.SelectedItem.ToString() + ".txt";
+                // 读取文件内容  
+                string fileContent = File.ReadAllText(Path.Combine(targetPath, selectedValue));
+                Debug.Print("文件内容:" + fileContent);
+                //MessageBox.Show(fileContent, "文件内容");
+                byte[] byteArray = Convert.FromBase64String(fileContent);
+                // 使用 MemoryStream将字节数组转换为Image  
+                using (MemoryStream ms = new MemoryStream(byteArray))
+                {
+                    // 从 MemoryStream 加载 Image  
+                    Image image = Image.FromStream(ms);
+                    // 将 Image 赋值给 PictureBox 的 Image 属性  
+                    imgBox.Image = image;
+                }
+            }
+        }
     }
-    #endregion
 }

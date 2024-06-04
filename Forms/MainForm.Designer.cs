@@ -54,6 +54,7 @@ namespace MatrixForm
             this.IPLabel = new System.Windows.Forms.Label();
             this.IPBox = new System.Windows.Forms.TextBox();
             this.TcpBtn = new System.Windows.Forms.Button();
+            this.imgComboBox = new System.Windows.Forms.ComboBox();
             this.imgPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             this.LeftPanel.SuspendLayout();
@@ -66,6 +67,7 @@ namespace MatrixForm
             this.imgPanel.AutoSize = true;
             this.imgPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.imgPanel.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.imgPanel.Controls.Add(this.imgComboBox);
             this.imgPanel.Controls.Add(this.imgBtn);
             this.imgPanel.Controls.Add(this.imgBox);
             this.imgPanel.Dock = System.Windows.Forms.DockStyle.Right;
@@ -77,7 +79,7 @@ namespace MatrixForm
             // imgBtn
             // 
             this.imgBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.imgBtn.Location = new System.Drawing.Point(160, 25);
+            this.imgBtn.Location = new System.Drawing.Point(170, 14);
             this.imgBtn.Name = "imgBtn";
             this.imgBtn.Size = new System.Drawing.Size(56, 32);
             this.imgBtn.TabIndex = 2;
@@ -266,6 +268,15 @@ namespace MatrixForm
             this.TcpBtn.UseVisualStyleBackColor = false;
             this.TcpBtn.Click += new System.EventHandler(this.TcpBtn_Click);
             // 
+            // imgComboBox
+            // 
+            this.imgComboBox.FormattingEnabled = true;
+            this.imgComboBox.Location = new System.Drawing.Point(83, 52);
+            this.imgComboBox.Name = "imgComboBox";
+            this.imgComboBox.Size = new System.Drawing.Size(207, 26);
+            this.imgComboBox.TabIndex = 3;
+            this.imgComboBox.SelectedIndexChanged += new System.EventHandler(this.ShowImgHandle);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
@@ -314,6 +325,7 @@ namespace MatrixForm
         private Button StopTcpBtn;//停止通信按钮
         private Label IntervalLabel;//通信间隔文本
         private TextBox IntervalBox;//通信间隔输入
+        private ComboBox imgComboBox;
     }
 }
 
