@@ -23,18 +23,19 @@ namespace MatrixForm
     public partial class MainForm : Form
     {
         /*定义私有对象*/
-        private String ipAddress;
-        private String port;
-        private String encodingType;
-        //private String tcpInterval;
-        private String targetPath;
+        private string ipAddress;//IP
+        private string port;//端口
+        private string encodingType;//编码格式
+        //private string tcpInterval;
+        private string targetPath;//目标图片路径
+        string result = "";//保存结果
 
         private TcpListener listener;
         private Thread listenThread;
         private TcpClient client;
         private bool keepTcp= true;
         private List<TcpClient> clients = new List<TcpClient>();
-        private System.Timers.Timer sendTime;
+        private System.Timers.Timer sendTime;//定时器
 
         public MainForm()
         {
@@ -43,18 +44,6 @@ namespace MatrixForm
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //IPBox.Text = "192.168.0.4";
-            //PortBox.Text = "8080";
-
-            //// 从App.config中读取IP地址和端口号  
-            //string ipAddress = ConfigurationManager.AppSettings["IPAddress"];
-            //string port = ConfigurationManager.AppSettings["Port"];
-            //string tcpInterval = ConfigurationManager.AppSettings["TcpInterval"];
-            //// 分配值给TextBox控件
-            //IPBox.Text = ipAddress;
-            //PortBox.Text = port;
-            //IntervalBox.Text = tcpInterval;
-
             try
             {
                 // 从App.config中读取IP地址、端口号和间隔  
@@ -141,40 +130,8 @@ namespace MatrixForm
                 MessageBox.Show("读取文件夹时出错");
             }
 
-            // 获取当前应用程序的执行目录  
-            //string basePath = AppDomain.CurrentDomain.BaseDirectory;/*执行文件目录*/
-            //Debug.Print("路径:" + basePath);
-            //string filePath = Path.Combine(basePath, "config", "file", "img2.txt");
-            //try
-            //{
-            //    // 检查文件是否存在
-            //    if (File.Exists(filePath))
-            //    {
-            //        // 读取文件内容  
-            //        string fileContent = File.ReadAllText(filePath);
-            //        Debug.Print("文件内容:" + fileContent);
-            //        //MessageBox.Show(fileContent, "文件内容");
-            //        byte[] byteArray = Convert.FromBase64String(fileContent);
-            //        // 使用 MemoryStream将字节数组转换为Image  
-            //        using (MemoryStream ms = new MemoryStream(byteArray))
-            //        {
-            //            // 从 MemoryStream 加载 Image  
-            //            Image image = Image.FromStream(ms);
-            //            // 将 Image 赋值给 PictureBox 的 Image 属性  
-            //            imgBox.Image = image;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // 文件不存在时的处理  
-            //        MessageBox.Show("文件不存在！", "错误");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    // 处理可能出现的异常  
-            //    MessageBox.Show("读取文件时出错: " + ex.Message, "错误");
-            //}
+            string sql = "SELECT * FROM  HWLIS_INTERFACE_DATA WHERE SBBM='637' and to_char(jyrq,'YYYYMMDD')=('20240604') and ybh='20'";
+            DataBaseTool.QuerySql(sql);
         }
 
         #region 通信响应逻辑
@@ -232,8 +189,8 @@ namespace MatrixForm
                     UpdateUIThreadSafe("客户端连接成功：" + client.Client.RemoteEndPoint);
                     clients.Add(client);
 
-                    // 一旦连接建立，启动发送数据的定时器  
-                    StartSendDataTimer(client);
+                    // 一旦连接建立,启动发送数据的定时器  
+                    //StartSendDataTimer(client);
                 }
                 catch (SocketException)
                 {
@@ -268,6 +225,7 @@ namespace MatrixForm
         {
             if (client != null && client.Connected)
             {
+                /*发送数据逻辑*/
                 try
                 {
                     NetworkStream stream = client.GetStream();
@@ -284,6 +242,12 @@ namespace MatrixForm
                     clients.Remove(client);
                     StopSendDataTimer();
                 }
+                
+                /*检测数据*/
+                //if (!CheckTools.IsNullOrEmptyString(result))
+                //{
+                //    Console.WriteLine("数据：" + result);
+                //}
             }
         }
 
@@ -320,6 +284,7 @@ namespace MatrixForm
                     }
                     // 更新UI以显示接收到的数据  
                     UpdateUIThreadSafe(receivedData);
+                    result += receivedData;
                 }
             }
             catch (IOException e) when ((uint)e.HResult == 0x800703E3)
@@ -336,11 +301,11 @@ namespace MatrixForm
                 // 处理其他类型的异常
                 //UpdateUIThreadSafe("发生异常: " + e.Message);
             }
+
             // 关闭连接  
             client.Close();
             UpdateUIThreadSafe("客户端连接已关闭!");
-
-            StopSendDataTimer();
+            StopSendDataTimer();//客户端关闭,停止发送数据
         }
 
         /// <summary>
