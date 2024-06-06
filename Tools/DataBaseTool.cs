@@ -37,11 +37,8 @@ namespace MatrixForm.Tools
     {
         public static List<Dictionary<string, object>> QuerySql(string sqlStr)
         {
-
             string connectionString = ConfigurationManager.ConnectionStrings["OracleConnectionString"].ConnectionString;
-            //string result = null;
             List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
-
             using (OracleConnection connection = new OracleConnection(connectionString))
             {
                 connection.Open();
@@ -58,7 +55,6 @@ namespace MatrixForm.Tools
                 }
                 reader.Close(); // 可以不需要显式关闭,using会处理资源的释放
             }
-
             foreach (var row in results)
             {
                 foreach (var column in row)
@@ -67,8 +63,31 @@ namespace MatrixForm.Tools
                 }
                 Console.WriteLine(); // 换行以区分不同的行
             }
-
             return results;
+        }
+
+        public static string Update(string sqlStr)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["OracleConnectionString"].ConnectionString;
+            using (OracleConnection connection = new OracleConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    OracleCommand command = new OracleCommand(sqlStr, connection);
+
+                    // 执行UPDATE操作  
+                    int rowsAffected = command.ExecuteNonQuery();
+                    Console.WriteLine("{0} 行被更新。", rowsAffected);
+
+                    return "success";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("发生错误: " + ex.Message);
+                    return ex.Message;
+                }
+            }
         }
     }
 }

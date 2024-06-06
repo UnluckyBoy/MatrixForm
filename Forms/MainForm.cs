@@ -37,6 +37,8 @@ namespace MatrixForm
         private List<TcpClient> clients = new List<TcpClient>();
         private System.Timers.Timer sendTime;//定时器
 
+        private bool IsShowRepush=false;//判断是否已打开重推界面
+
         public MainForm()
         {
             InitializeComponent();
@@ -402,6 +404,49 @@ namespace MatrixForm
                     Image image = Image.FromStream(ms);
                     // 将 Image 赋值给 PictureBox 的 Image 属性  
                     imgBox.Image = image;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 显示重推界面组件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void ShowRePushPanel(object sender, EventArgs e)
+        {
+            if (!IsShowRepush)
+            {
+                RePushPanel.Visible = true;
+                IsShowRepush = !IsShowRepush;
+                RePushBtn.BackColor = Color.Gray;
+            }
+            else
+            {
+                RePushPanel.Visible = false;
+                IsShowRepush = !IsShowRepush;
+                RePushBtn.BackColor = Color.LawnGreen;
+            }
+        }
+
+        private void PushData(object sender, EventArgs e)
+        {
+            string sqid= SqidBox.Text.Trim();
+            if (CheckTools.IsNullOrEmptyString(sqid)) {
+                MessageBox.Show("输入内容为空!");
+            }
+            else
+            {
+                sqid = sqid.Replace(" ", ",").Replace("，", ",").Replace("、", ",").Replace("\n", ",").Replace("；", ",").Replace(";", ",");/*防止输入有误*/
+                string sql = "update HWHISDBA.HWLIS_JYSQ set SGSCBZ='0' where sqid in ('"+ sqid + "')";
+                string result = DataBaseTool.Update(sql);
+                if (result== "success") {
+                    MessageBox.Show("修改成功!");
+                }
+                else
+                {
+                    MessageBox.Show("修改失败:"+result);
                 }
             }
         }
