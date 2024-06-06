@@ -375,7 +375,6 @@ namespace MatrixForm
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "工作小助手 By 无名";
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.imgPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).EndInit();

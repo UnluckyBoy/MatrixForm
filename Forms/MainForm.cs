@@ -427,6 +427,7 @@ namespace MatrixForm
                 RePushPanel.Visible = false;
                 IsShowRepush = !IsShowRepush;
                 RePushBtn.BackColor = Color.LawnGreen;
+                SqidBox.Text = "";
             }
         }
 
@@ -435,6 +436,7 @@ namespace MatrixForm
             string sqid= SqidBox.Text.Trim();
             if (CheckTools.IsNullOrEmptyString(sqid)) {
                 MessageBox.Show("输入内容为空!");
+                SqidBox.Text="";
             }
             else
             {
