@@ -433,6 +433,8 @@ namespace MatrixForm
 
         private void PushData(object sender, EventArgs e)
         {
+            string start_str = "('";
+            string end_str = "')";
             string sqid= SqidBox.Text.Trim();
             if (CheckTools.IsNullOrEmptyString(sqid)) {
                 MessageBox.Show("输入内容为空!");
@@ -440,15 +442,20 @@ namespace MatrixForm
             }
             else
             {
-                sqid = sqid.Replace(" ", ",").Replace("，", ",").Replace("、", ",").Replace("\n", ",").Replace("；", ",").Replace(";", ",");/*防止输入有误*/
-                string sql = "update HWHISDBA.HWLIS_JYSQ set SGSCBZ='0' where sqid in ('"+ sqid + "')";
-                string result = DataBaseTool.Update(sql);
-                if (result== "success") {
+                sqid = sqid.Replace(" ", "','").Replace("，", "','").Replace("、", "','").Replace("\n", "','").Replace("；", "','").Replace(";", "','");/*防止输入有误*/
+                sqid = start_str + sqid+ end_str;
+                Console.WriteLine("sqid:" + sqid);
+                //string sql = "update HWHISDBA.HWLIS_JYSQ set SGSCBZ='0' where sqid in ('"+ sqid + "')";
+                string selectSql = "select HWLIS_JYSQ.SGSCBZ from HWLIS_JYSQ where SQID in ";
+
+                string result = DataBaseTool.Update(selectSql,sqid);
+                if (result == "success")
+                {
                     MessageBox.Show("修改成功!");
                 }
                 else
                 {
-                    MessageBox.Show("修改失败:"+result);
+                    MessageBox.Show("修改失败：" + result);
                 }
             }
         }

@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using Oracle.ManagedDataAccess.Client;
+using System.Windows.Forms;
 
 namespace MatrixForm.Tools
 {
@@ -66,25 +67,46 @@ namespace MatrixForm.Tools
             return results;
         }
 
-        public static string Update(string sqlStr)
+        public static string Update(string sqlStr,string sqlKey)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["OracleConnectionString"].ConnectionString;
+            string updateSql = "update HWHISDBA.HWLIS_JYSQ set SGSCBZ='0' where sqid in ";
             using (OracleConnection connection = new OracleConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    OracleCommand command = new OracleCommand(sqlStr, connection);
-
-                    // 执行UPDATE操作  
-                    int rowsAffected = command.ExecuteNonQuery();
-                    Console.WriteLine("{0} 行被更新。", rowsAffected);
-
-                    return "success";
+                    using (OracleCommand selectCommand = new OracleCommand(sqlStr+ sqlKey, connection))
+                    {
+                        OracleDataReader reader = selectCommand.ExecuteReader();
+                        if (reader.HasRows) // 检查是否有数据行  
+                        {
+                            Console.WriteLine("查询到数据。");
+                            using (OracleCommand updateCommand = new OracleCommand(updateSql + sqlKey, connection))
+                            {
+                                int rowsAffected = updateCommand.ExecuteNonQuery();
+                                if (rowsAffected>0)
+                                {
+                                    return "success";
+                                }
+                                else
+                                {
+                                    return "意料之外的异常！";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //MessageBox.Show("条码号异常!请检查。。。");
+                            return "条码号异常！请检查。。。";
+                        }
+                        //reader.Close(); //通常不需要手动关闭,因为using语句会处理它
+                    }
+                    //selectCommand.Close();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("发生错误: " + ex.Message);
+                    Console.WriteLine("发生错误-" + ex.Message);
                     return ex.Message;
                 }
             }
